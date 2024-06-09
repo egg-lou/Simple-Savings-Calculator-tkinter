@@ -12,49 +12,43 @@ class App:
         self.configure_master()
         self.create_widgets()
         self.configure_widgets()
-        self.pack_widgets()
 
     def configure_master(self):
         self.master.title("Savings Calculator")
-        self.master.geometry("400x200")
+        self.master.geometry("400x320")
         self.master.resizable(False, False)
 
     def create_widgets(self):
-        self.amount_input = tk.Frame(self.master)
-        self.percentage_input = tk.Frame(self.master)
-        self.months_input = tk.Frame(self.master)
-        self.button_frame = tk.Frame(self.master)
+        self.main_frame = tk.Frame(self.master)
+        self.main_frame.pack(padx=10, pady=10)
 
-        self.title_label = CustomLabel(text="Savings Calculator", font=bold.get_font())
-        self.amount_label = CustomLabel(self.amount_input, text="Amount: ", font=normal.get_font())
-        self.percentage_label = CustomLabel(self.percentage_input, text="Percent to save: ", font=normal.get_font())
-        self.months_label = CustomLabel(self.months_input, text="Months: ", font=normal.get_font())
-        self.result_label = CustomLabel(text="", font=bold.get_font())
-
-        self.amount_entry = CustomEntry(self.amount_input)
-        self.percentage_entry = CustomEntry(self.percentage_input)
-        self.months_dropdown = MonthsDropdown(self.months_input)
-
-        self.calculate_button = CustomButton(self.button_frame, command=self.calculate, text="Calculate")
-        self.reset_button = CustomButton(self.button_frame, command=self.reset, text="Reset")
+        self.title_label = CustomLabel(self.main_frame, text="Savings Calculator", font=bold.get_font())
+        self.amount_label = CustomLabel(self.main_frame, text="Amount: ", font=normal.get_font())
+        self.amount_entry = CustomEntry(self.main_frame)
+        self.percentage_label = CustomLabel(self.main_frame, text="Percent to save: ", font=normal.get_font())
+        self.percentage_entry = CustomEntry(self.main_frame)
+        self.months_label = CustomLabel(self.main_frame, text="Months: ", font=normal.get_font())
+        self.months_dropdown = MonthsDropdown(self.main_frame)
+        self.result_label = CustomLabel(self.main_frame, text="", font=bold.get_font())
+        self.calculate_button = CustomButton(self.main_frame, command=self.calculate, text="Calculate")
+        self.reset_button = CustomButton(self.main_frame, command=self.reset, text="Reset")
 
     def configure_widgets(self):
-        self.calculate_button.pack(side="right", padx=5)
-        self.reset_button.pack(side="right", padx=5)
+        self.title_label.grid(row=0, column=0, columnspan=2, pady=10)
+        self.amount_label.grid(row=1, column=0, padx=5, sticky='e')
+        self.amount_entry.grid(row=1, column=1, padx=5, sticky='w')
+        self.percentage_label.grid(row=2, column=0, padx=5, sticky='e')
+        self.percentage_entry.grid(row=2, column=1, padx=5, sticky='w')
+        self.months_label.grid(row=3, column=0, padx=5, sticky='e')
+        self.months_dropdown.grid(row=3, column=1, padx=5, sticky='w')
+        self.result_label.grid(row=4, column=0, columnspan=2, pady=2)
+        self.calculate_button.grid(row=5, column=0, sticky='w')
+        self.reset_button.grid(row=5, column=1, sticky='e')
 
-        self.amount_label.grid(row=0, column=0, padx=5, sticky='e')
-        self.amount_entry.grid(row=0, column=1, padx=5, sticky='w')
-        self.percentage_label.grid(row=1, column=0, padx=5, sticky='e')
-        self.percentage_entry.grid(row=1, column=1, padx=5, sticky='w')
-        self.months_label.grid(row=2, column=0, padx=5, sticky='e')
-        self.months_dropdown.grid(row=2, column=1, padx=5, sticky='w')
-
-    def pack_widgets(self):
-        self.title_label.pack(pady=10)
-        self.amount_input.pack(padx=10, pady=5)
-        self.percentage_input.pack(padx=10, pady=5)
-        self.months_input.pack(padx=10, pady=5)
-        self.button_frame.pack(pady=10)
+        for i in range(6):
+            self.main_frame.rowconfigure(i, minsize=50)
+            self.main_frame.columnconfigure(0, minsize=20)
+            self.main_frame.columnconfigure(1, minsize=20)
 
     def calculate(self):
         try:
@@ -62,6 +56,7 @@ class App:
             percentage = float(self.percentage_entry.get())
             months = int(self.months_dropdown.get())
             result = self.savings_calculator.calculate(amount, percentage, months)
+            result = round(result, 2)
             self.result_label.config(text=f"You will save: Php {result}")
         except Exception as e:
             messagebox.showerror("Error", str(e))
