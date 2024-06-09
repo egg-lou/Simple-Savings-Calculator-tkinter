@@ -29,9 +29,9 @@ class App:
         self.percentage_entry = CustomEntry(self.main_frame)
         self.months_label = CustomLabel(self.main_frame, text="Months: ", font=normal.get_font())
         self.months_dropdown = MonthsDropdown(self.main_frame)
-        self.result_label = CustomLabel(self.main_frame, text="", font=bold.get_font())
-        self.calculate_button = CustomButton(self.main_frame, command=self.calculate, text="Calculate")
-        self.reset_button = CustomButton(self.main_frame, command=self.reset, text="Reset")
+        self.result_label = CustomLabel(self.main_frame, text="You will save: Php 0.00", font=bold.get_font())
+        self.calculate_button = CustomButton(self.main_frame, command=self.calculate, text="Calculate", font=normal.get_font())
+        self.reset_button = CustomButton(self.main_frame, command=self.reset, text="Reset", font=normal.get_font())
 
     def configure_widgets(self):
         self.title_label.grid(row=0, column=0, columnspan=2, pady=10)
@@ -52,8 +52,16 @@ class App:
 
     def calculate(self):
         try:
-            amount = float(self.amount_entry.get())
-            percentage = float(self.percentage_entry.get())
+            amount_str = self.amount_entry.get()
+            if not amount_str.replace('.', '', 1).isdigit():
+                raise ValueError("Amount must be a number and greater than 0.")
+            amount = float(amount_str)
+
+            percentage_str = self.percentage_entry.get()
+            if not percentage_str.replace('.', '', 1).isdigit():
+                raise ValueError("Percentage must be a number.")
+            percentage = float(percentage_str)
+
             months = int(self.months_dropdown.get())
             result = self.savings_calculator.calculate(amount, percentage, months)
             result = round(result, 2)
@@ -66,7 +74,7 @@ class App:
         self.amount_entry.delete(0, "end")
         self.percentage_entry.delete(0, "end")
         self.months_dropdown.set(1)
-        self.result_label.config(text="")
+        self.result_label.config(text="You will save: Php 0.00")
         self.amount_entry.focus_set()
 
 
