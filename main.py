@@ -30,8 +30,8 @@ class App:
         self.months_label = CustomLabel(self.main_frame, text="Months: ", font=normal.get_font())
         self.months_dropdown = MonthsDropdown(self.main_frame)
         self.result_label = CustomLabel(self.main_frame, text="You will save: Php 0.00", font=bold.get_font())
-        self.calculate_button = CustomButton(self.main_frame, command=self.calculate, text="Calculate", font=normal.get_font())
-        self.reset_button = CustomButton(self.main_frame, command=self.reset, text="Reset", font=normal.get_font())
+        self.calculate_button = CustomButton(self.main_frame, command=self.calculate, text="Calculate", font=normal.get_font(), bg="green", fg="white")
+        self.reset_button = CustomButton(self.main_frame, command=self.reset, text="Reset", font=normal.get_font(), bg="red", fg="white")
 
     def configure_widgets(self):
         self.title_label.grid(row=0, column=0, columnspan=2, pady=10)
