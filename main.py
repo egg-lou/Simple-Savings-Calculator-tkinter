@@ -61,11 +61,11 @@ class App:
 
             percentage_str = self.percentage_entry.get()
             if not percentage_str.replace('.', '', 1).isdigit():
-                raise ValueError("Percentage must be a number.")
+                raise ValueError("Percentage is not a number.")
             percentage = float(percentage_str)
 
             months = int(self.months_dropdown.get())
-            result = self.savings_calculator.calculate(amount, percentage, months)
+            result = self.savings_calculator.calculate(amount=amount, percentage=percentage, months=months)
             result = round(result, 2)
             self.result_label.config(text=f"You will save: Php {result}")
         except Exception as e:
