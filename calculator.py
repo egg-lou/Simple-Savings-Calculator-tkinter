@@ -1,4 +1,10 @@
-from .calculator import Calculator
+from abc import ABC, abstractmethod
+
+
+class Calculator(ABC):
+    @abstractmethod
+    def calculate(self, **kwargs):
+        pass
 
 
 class SavingsCalculator(Calculator):

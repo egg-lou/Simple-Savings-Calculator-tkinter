@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
-from widgets import (MonthsDropdown, CustomButton)
-from logic import SavingsCalculator
-from utils import FontManager
+from calculator import SavingsCalculator
+from font_manager import FontManager
+from widgets import CustomButton, CustomLabel, CustomEntry, CustomDropdown
 
 
 class App:
@@ -22,17 +22,36 @@ class App:
         self.main_frame = tk.Frame(self.master)
         self.main_frame.pack(padx=10, pady=10)
 
-        self.title_label = tk.Label(self.main_frame, text="Savings Calculator", font=bold.get_font())
-        self.amount_label = tk.Label(self.main_frame, text="Amount: ", font=normal.get_font())
-        self.amount_entry = tk.Entry(self.main_frame)
-        self.percentage_label = tk.Label(self.main_frame, text="Percent to save: ", font=normal.get_font())
-        self.percentage_entry = tk.Entry(self.main_frame)
-        self.months_label = tk.Label(self.main_frame, text="Months: ", font=normal.get_font())
-        self.months_dropdown = MonthsDropdown(self.main_frame)
-        self.result_label = tk.Label(self.main_frame, text="You will save: Php 0.00", font=bold.get_font())
-        self.calculate_button = CustomButton(self.main_frame, command=self.calculate, text="Calculate", font=normal.get_font())
+        self.title_label = CustomLabel(self.main_frame, bold.get_font())
+        self.title_label.create("Savings Calculator")
+
+        self.amount_label = CustomLabel(self.main_frame, normal.get_font())
+        self.amount_label.create("Amount: ")
+
+        self.amount_entry = CustomEntry(self.main_frame, normal.get_font())
+        self.amount_entry.create()
+
+        self.percentage_label = CustomLabel(self.main_frame, normal.get_font())
+        self.percentage_label.create("Percent to save: ")
+
+        self.percentage_entry = CustomEntry(self.main_frame, normal.get_font())
+        self.percentage_entry.create()
+
+        self.months_label = CustomLabel(self.main_frame, normal.get_font())
+        self.months_label.create("Months: ")
+
+        self.months_dropdown = CustomDropdown(self.main_frame, normal.get_font())
+        self.months_dropdown.create(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"])
+
+        self.result_label = CustomLabel(self.main_frame, bold.get_font())
+        self.result_label.create("You will save: Php 0.00")
+
+        self.calculate_button = CustomButton(self.main_frame,  normal.get_font())
+        self.calculate_button.create("Calculate", self.calculate)
         self.calculate_button.green_config()
-        self.reset_button = CustomButton(self.main_frame, command=self.reset, text="Reset", font=normal.get_font())
+
+        self.reset_button = CustomButton(self.main_frame, normal.get_font())
+        self.reset_button.create("Reset", self.reset)
         self.reset_button.red_config()
 
     def configure_widgets(self):
@@ -54,16 +73,8 @@ class App:
 
     def calculate(self):
         try:
-            amount_str = self.amount_entry.get()
-            if not amount_str.replace('.', '', 1).isdigit():
-                raise ValueError("Amount must be a number and greater than 0.")
-            amount = float(amount_str)
-
-            percentage_str = self.percentage_entry.get()
-            if not percentage_str.replace('.', '', 1).isdigit():
-                raise ValueError("Percentage is not a number.")
-            percentage = float(percentage_str)
-
+            amount = self.validate_input(self.amount_entry.get(), "Amount")
+            percentage = self.validate_input(self.percentage_entry.get(), "Percentage")
             months = int(self.months_dropdown.get())
             result = self.savings_calculator.calculate(amount=amount, percentage=percentage, months=months)
             result = round(result, 2)
@@ -77,7 +88,12 @@ class App:
         self.percentage_entry.delete(0, "end")
         self.months_dropdown.set(1)
         self.result_label.config(text="You will save: Php 0.00")
-        self.amount_entry.focus_set()
+
+    @staticmethod
+    def validate_input(input_str, input_name):
+        if not input_str.replace('.', '', 1).isdigit():
+            raise ValueError(f"{input_name} must be a number and greater than 0.")
+        return float(input_str)
 
 
 root = tk.Tk()
