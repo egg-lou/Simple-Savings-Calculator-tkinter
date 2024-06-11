@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-from widgets import (CustomLabel, CustomEntry, MonthsDropdown, CustomButton)
+from widgets import (MonthsDropdown, CustomButton)
 from logic import SavingsCalculator
 from utils import FontManager
 
@@ -22,16 +22,18 @@ class App:
         self.main_frame = tk.Frame(self.master)
         self.main_frame.pack(padx=10, pady=10)
 
-        self.title_label = CustomLabel(self.main_frame, text="Savings Calculator", font=bold.get_font())
-        self.amount_label = CustomLabel(self.main_frame, text="Amount: ", font=normal.get_font())
-        self.amount_entry = CustomEntry(self.main_frame)
-        self.percentage_label = CustomLabel(self.main_frame, text="Percent to save: ", font=normal.get_font())
-        self.percentage_entry = CustomEntry(self.main_frame)
-        self.months_label = CustomLabel(self.main_frame, text="Months: ", font=normal.get_font())
+        self.title_label = tk.Label(self.main_frame, text="Savings Calculator", font=bold.get_font())
+        self.amount_label = tk.Label(self.main_frame, text="Amount: ", font=normal.get_font())
+        self.amount_entry = tk.Entry(self.main_frame)
+        self.percentage_label = tk.Label(self.main_frame, text="Percent to save: ", font=normal.get_font())
+        self.percentage_entry = tk.Entry(self.main_frame)
+        self.months_label = tk.Label(self.main_frame, text="Months: ", font=normal.get_font())
         self.months_dropdown = MonthsDropdown(self.main_frame)
-        self.result_label = CustomLabel(self.main_frame, text="You will save: Php 0.00", font=bold.get_font())
-        self.calculate_button = CustomButton(self.main_frame, command=self.calculate, text="Calculate", font=normal.get_font(), bg="green", fg="white")
-        self.reset_button = CustomButton(self.main_frame, command=self.reset, text="Reset", font=normal.get_font(), bg="red", fg="white")
+        self.result_label = tk.Label(self.main_frame, text="You will save: Php 0.00", font=bold.get_font())
+        self.calculate_button = CustomButton(self.main_frame, command=self.calculate, text="Calculate", font=normal.get_font())
+        self.calculate_button.green_config()
+        self.reset_button = CustomButton(self.main_frame, command=self.reset, text="Reset", font=normal.get_font())
+        self.reset_button.red_config()
 
     def configure_widgets(self):
         self.title_label.grid(row=0, column=0, columnspan=2, pady=10)
