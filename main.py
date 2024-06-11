@@ -24,45 +24,42 @@ class App:
         self.main_frame = tk.Frame(self.master)
         self.main_frame.pack(padx=10, pady=10)
 
-        self.widgets = {
-            "title_label": CustomLabel(self.main_frame, bold.get_font()),
-            "amount_label": CustomLabel(self.main_frame, normal.get_font()),
-            "amount_entry": CustomEntry(self.main_frame, normal.get_font()),
-            "percentage_label": CustomLabel(self.main_frame, normal.get_font()),
-            "percentage_entry": CustomEntry(self.main_frame, normal.get_font()),
-            "months_label": CustomLabel(self.main_frame, normal.get_font()),
-            "months_dropdown": CustomDropdown(self.main_frame, normal.get_font()),
-            "result_label": CustomLabel(self.main_frame, bold.get_font()),
-            "calculate_button": CustomButton(self.main_frame, normal.get_font()),
-            "reset_button": CustomButton(self.main_frame, normal.get_font())
+        widget_classes = {
+            "title_label": (CustomLabel, {"text": "Savings Calculator"}),
+            "amount_label": (CustomLabel, {"text": "Amount: "}),
+            "amount_entry": (CustomEntry, {}),
+            "percentage_label": (CustomLabel, {"text": "Percent to save: "}),
+            "percentage_entry": (CustomEntry, {}),
+            "months_label": (CustomLabel, {"text": "Months: "}),
+            "months_dropdown": (CustomDropdown, {"values": [str(i) for i in range(1, 13)]}),
+            "result_label": (CustomLabel, {"text": "You will save: Php 0.00"}),
+            "calculate_button": (CustomButton, {"text": "Calculate", "command": self.calculate}),
+            "reset_button": (CustomButton, {"text": "Reset", "command": self.reset})
         }
 
-        dropdown_values = [str(i) for i in range(1, 13)]
-
-        self.widgets["title_label"].create("Savings Calculator")
-        self.widgets["amount_label"].create("Amount: ")
-        self.widgets["amount_entry"].create()
-        self.widgets["percentage_label"].create("Percent to save: ")
-        self.widgets["percentage_entry"].create()
-        self.widgets["months_label"].create("Months: ")
-        self.widgets["months_dropdown"].create(dropdown_values)
-        self.widgets["result_label"].create("You will save: Php 0.00")
-        self.widgets["calculate_button"].create("Calculate", self.calculate)
-        self.widgets["calculate_button"].green_config()
-        self.widgets["reset_button"].create("Reset", self.reset)
-        self.widgets["reset_button"].red_config()
+        self.widgets = {name: cls(self.main_frame,
+                                  bold.get_font() if name == "title_label" else normal.get_font()).create(**args)
+                        for name, (cls, args) in widget_classes.items()}
 
     def configure_widgets(self):
-        self.widgets["title_label"].grid(row=0, column=0, columnspan=2, pady=10)
-        self.widgets["amount_label"].grid(row=1, column=0, padx=5, sticky='e')
-        self.widgets["amount_entry"].grid(row=1, column=1, padx=5, sticky='w')
-        self.widgets["percentage_label"].grid(row=2, column=0, padx=5, sticky='e')
-        self.widgets["percentage_entry"].grid(row=2, column=1, padx=5, sticky='w')
-        self.widgets["months_label"].grid(row=3, column=0, padx=5, sticky='e')
-        self.widgets["months_dropdown"].grid(row=3, column=1, padx=5, sticky='w')
-        self.widgets["result_label"].grid(row=4, column=0, columnspan=2, pady=2)
-        self.widgets["calculate_button"].grid(row=5, column=0, sticky='w')
-        self.widgets["reset_button"].grid(row=5, column=1, sticky='e')
+        grid_configs = {
+            "title_label": {"row": 0, "column": 0, "columnspan": 2, "pady": 10},
+            "amount_label": {"row": 1, "column": 0, "padx": 5, "sticky": 'e'},
+            "amount_entry": {"row": 1, "column": 1, "padx": 5, "sticky": 'w'},
+            "percentage_label": {"row": 2, "column": 0, "padx": 5, "sticky": 'e'},
+            "percentage_entry": {"row": 2, "column": 1, "padx": 5, "sticky": 'w'},
+            "months_label": {"row": 3, "column": 0, "padx": 5, "sticky": 'e'},
+            "months_dropdown": {"row": 3, "column": 1, "padx": 5, "sticky": 'w'},
+            "result_label": {"row": 4, "column": 0, "columnspan": 2, "pady": 2},
+            "calculate_button": {"row": 5, "column": 0, "sticky": 'w'},
+            "reset_button": {"row": 5, "column": 1, "sticky": 'e'}
+        }
+
+        for name, config in grid_configs.items():
+            self.widgets[name].grid(**config)
+
+        self.widgets['calculate_button'].green_config()
+        self.widgets['reset_button'].red_config()
 
         for i in range(6):
             self.main_frame.rowconfigure(i, minsize=50)
@@ -84,7 +81,7 @@ class App:
     def reset(self):
         self.widgets['amount_entry'].delete(0, "end")
         self.widgets['percentage_entry'].delete(0, "end")
-        self.widgets['months_dropdown'].widget.current(0)
+        self.widgets['months_dropdown'].current(0)
         self.widgets['result_label'].config(text="You will save: Php 0.00")
 
     @staticmethod

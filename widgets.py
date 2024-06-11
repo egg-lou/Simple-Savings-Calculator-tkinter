@@ -22,11 +22,13 @@ class BaseWidget:
 class CustomLabel(BaseWidget):
     def create(self, text):
         self.widget = tk.Label(self.master, text=text, font=self.font, **self.kwargs)
+        return self.widget
 
 
 class CustomEntry(BaseWidget):
     def create(self):
         self.widget = tk.Entry(self.master, font=self.font, **self.kwargs)
+        return self.widget
 
     def get(self):
         return self.widget.get()
@@ -41,6 +43,7 @@ class CustomEntry(BaseWidget):
 class CustomButton(BaseWidget):
     def create(self, text, command):
         self.widget = tk.Button(self.master, text=text, font=self.font, command=command, **self.kwargs)
+        return self
 
     def green_config(self):
         self.config(bg="green", fg="white")
@@ -55,6 +58,7 @@ class CustomDropdown(BaseWidget):
         self.widget.current(0)
         self.widget.bind('<Delete>', lambda event: "break")
         self.widget.bind('<BackSpace>', lambda event: "break")
+        return self.widget
 
     def get(self):
         return self.widget.get()
