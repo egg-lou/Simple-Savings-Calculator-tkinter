@@ -7,6 +7,8 @@ from widgets import CustomButton, CustomLabel, CustomEntry, CustomDropdown
 
 class App:
     def __init__(self, master):
+        self.main_frame = None
+        self.widgets = None
         self.master = master
         self.savings_calculator = SavingsCalculator()
         self.configure_master()
@@ -22,49 +24,45 @@ class App:
         self.main_frame = tk.Frame(self.master)
         self.main_frame.pack(padx=10, pady=10)
 
-        self.title_label = CustomLabel(self.main_frame, bold.get_font())
-        self.title_label.create("Savings Calculator")
+        self.widgets = {
+            "title_label": CustomLabel(self.main_frame, bold.get_font()),
+            "amount_label": CustomLabel(self.main_frame, normal.get_font()),
+            "amount_entry": CustomEntry(self.main_frame, normal.get_font()),
+            "percentage_label": CustomLabel(self.main_frame, normal.get_font()),
+            "percentage_entry": CustomEntry(self.main_frame, normal.get_font()),
+            "months_label": CustomLabel(self.main_frame, normal.get_font()),
+            "months_dropdown": CustomDropdown(self.main_frame, normal.get_font()),
+            "result_label": CustomLabel(self.main_frame, bold.get_font()),
+            "calculate_button": CustomButton(self.main_frame, normal.get_font()),
+            "reset_button": CustomButton(self.main_frame, normal.get_font())
+        }
 
-        self.amount_label = CustomLabel(self.main_frame, normal.get_font())
-        self.amount_label.create("Amount: ")
+        dropdown_values = [str(i) for i in range(1, 13)]
 
-        self.amount_entry = CustomEntry(self.main_frame, normal.get_font())
-        self.amount_entry.create()
-
-        self.percentage_label = CustomLabel(self.main_frame, normal.get_font())
-        self.percentage_label.create("Percent to save: ")
-
-        self.percentage_entry = CustomEntry(self.main_frame, normal.get_font())
-        self.percentage_entry.create()
-
-        self.months_label = CustomLabel(self.main_frame, normal.get_font())
-        self.months_label.create("Months: ")
-
-        self.months_dropdown = CustomDropdown(self.main_frame, normal.get_font())
-        self.months_dropdown.create(["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"])
-
-        self.result_label = CustomLabel(self.main_frame, bold.get_font())
-        self.result_label.create("You will save: Php 0.00")
-
-        self.calculate_button = CustomButton(self.main_frame,  normal.get_font())
-        self.calculate_button.create("Calculate", self.calculate)
-        self.calculate_button.green_config()
-
-        self.reset_button = CustomButton(self.main_frame, normal.get_font())
-        self.reset_button.create("Reset", self.reset)
-        self.reset_button.red_config()
+        self.widgets["title_label"].create("Savings Calculator")
+        self.widgets["amount_label"].create("Amount: ")
+        self.widgets["amount_entry"].create()
+        self.widgets["percentage_label"].create("Percent to save: ")
+        self.widgets["percentage_entry"].create()
+        self.widgets["months_label"].create("Months: ")
+        self.widgets["months_dropdown"].create(dropdown_values)
+        self.widgets["result_label"].create("You will save: Php 0.00")
+        self.widgets["calculate_button"].create("Calculate", self.calculate)
+        self.widgets["calculate_button"].green_config()
+        self.widgets["reset_button"].create("Reset", self.reset)
+        self.widgets["reset_button"].red_config()
 
     def configure_widgets(self):
-        self.title_label.grid(row=0, column=0, columnspan=2, pady=10)
-        self.amount_label.grid(row=1, column=0, padx=5, sticky='e')
-        self.amount_entry.grid(row=1, column=1, padx=5, sticky='w')
-        self.percentage_label.grid(row=2, column=0, padx=5, sticky='e')
-        self.percentage_entry.grid(row=2, column=1, padx=5, sticky='w')
-        self.months_label.grid(row=3, column=0, padx=5, sticky='e')
-        self.months_dropdown.grid(row=3, column=1, padx=5, sticky='w')
-        self.result_label.grid(row=4, column=0, columnspan=2, pady=2)
-        self.calculate_button.grid(row=5, column=0, sticky='w')
-        self.reset_button.grid(row=5, column=1, sticky='e')
+        self.widgets["title_label"].grid(row=0, column=0, columnspan=2, pady=10)
+        self.widgets["amount_label"].grid(row=1, column=0, padx=5, sticky='e')
+        self.widgets["amount_entry"].grid(row=1, column=1, padx=5, sticky='w')
+        self.widgets["percentage_label"].grid(row=2, column=0, padx=5, sticky='e')
+        self.widgets["percentage_entry"].grid(row=2, column=1, padx=5, sticky='w')
+        self.widgets["months_label"].grid(row=3, column=0, padx=5, sticky='e')
+        self.widgets["months_dropdown"].grid(row=3, column=1, padx=5, sticky='w')
+        self.widgets["result_label"].grid(row=4, column=0, columnspan=2, pady=2)
+        self.widgets["calculate_button"].grid(row=5, column=0, sticky='w')
+        self.widgets["reset_button"].grid(row=5, column=1, sticky='e')
 
         for i in range(6):
             self.main_frame.rowconfigure(i, minsize=50)
@@ -73,21 +71,21 @@ class App:
 
     def calculate(self):
         try:
-            amount = self.validate_input(self.amount_entry.get(), "Amount")
-            percentage = self.validate_input(self.percentage_entry.get(), "Percentage")
-            months = int(self.months_dropdown.get())
+            amount = self.validate_input(self.widgets['amount_entry'].get(), "Amount")
+            percentage = self.validate_input(self.widgets['percentage_entry'].get(), "Percentage")
+            months = int(self.widgets['months_dropdown'].get())
             result = self.savings_calculator.calculate(amount=amount, percentage=percentage, months=months)
             result = round(result, 2)
-            self.result_label.config(text=f"You will save: Php {result}")
+            self.widgets['result_label'].config(text=f"You will save: Php {result}")
         except Exception as e:
             messagebox.showerror("Error", str(e))
             self.reset()
 
     def reset(self):
-        self.amount_entry.delete(0, "end")
-        self.percentage_entry.delete(0, "end")
-        self.months_dropdown.set(1)
-        self.result_label.config(text="You will save: Php 0.00")
+        self.widgets['amount_entry'].delete(0, "end")
+        self.widgets['percentage_entry'].delete(0, "end")
+        self.widgets['months_dropdown'].widget.current(0)
+        self.widgets['result_label'].config(text="You will save: Php 0.00")
 
     @staticmethod
     def validate_input(input_str, input_name):

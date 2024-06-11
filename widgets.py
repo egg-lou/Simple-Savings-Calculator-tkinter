@@ -9,7 +9,7 @@ class BaseWidget:
         self.kwargs = kwargs
         self.font = font
 
-    def create(self):
+    def create(self, *args, **kwargs):
         raise NotImplementedError
 
     def grid(self, **kwargs):
